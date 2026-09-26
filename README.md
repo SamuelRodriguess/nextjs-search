@@ -1,6 +1,6 @@
 # 🚀 Next.js 15 & NestJS BFF: Enterprise Search POC
 
-This repository is a technical showcase of a high-performance product search implementation. While it maintains a set of runnable demos for [Next.js SPA patterns](https://nextjs.org/docs/app/guides/single-page-applications), its primary purpose is to demonstrate a **Production-Ready Product Search Shelf** integrated with the **VTEX Intelligent Search API**.
+This repository is a technical showcase of a high-performance product search implementation. It demonstrates a **Production-Ready Product Search Shelf** integrated with the **VTEX Intelligent Search API**, utilizing a modern decoupled architecture.
 
 ---
 
@@ -25,7 +25,7 @@ The BFF is not a simple proxy; it is a stability layer that ensures the frontend
 Focused on **Core Web Vitals** and a seamless user experience.
 
 - **Next.js 15 Streaming**: Implemented the new `async searchParams` pattern. By wrapping the content in `<Suspense>`, the page shell (header/layout) renders instantly, while the product grid "streams" in as soon as the BFF responds.
-- **URL as State**: Leveraged Server Actions to synchronize search terms with the URL. This enables:
+- **URL as State**: Leveraged Server Actions to synchronize search terms with the URL. This ensures:
   - **Deep-linking**: Share specific search results via URL.
   - **Persistence**: Search state survives page reloads.
 - **BRL-First UI**: Integrated `Intl.NumberFormat` for professional Brazilian currency formatting.
@@ -53,18 +53,6 @@ pnpm dev
 👉 **Navigate to `/search` to experience the implementation.**
 
 ---
-
-## 🗺️ Project Map
-
-| Route | Focus | Key Technical Implementation |
-| :--- | :--- | :--- |
-| **`/search`** | **VTEX Search Shelf** | **Streaming, Circuit Breaker, BFF Orchestration** |
-| `/use-context` | State Management | React `use()` hook and Promise-based context |
-| `/swr` | Client-side Cache | SWR revalidation & Optimistic UI |
-| `/react-query` | Query Orchestration | TanStack Query Hydration & Server Tags |
-| `/browser-only` | Client Rendering | `ssr: false` vs `use(browser())` |
-| `/shallow-routing` | Client-side State | `window.history.pushState` for non-blocking updates |
-| `/mutations` | Data Writing | Server Actions with `useActionState` & `useOptimistic` |
 
 ## ⚙️ Technical Stack
 
