@@ -1,63 +1,74 @@
-# Next.js SPA patterns
+# 🚀 Next.js 15 & NestJS BFF: Enterprise Search POC
 
-Runnable demos for the [Single-Page Applications guide](https://nextjs.org/docs/app/guides/single-page-applications). Each route maps to one section of the guide, so you can read the guide and try the pattern side by side.
+This repository is a technical showcase of a high-performance product search implementation. While it maintains a set of runnable demos for [Next.js SPA patterns](https://nextjs.org/docs/app/guides/single-page-applications), its primary purpose is to demonstrate a **Production-Ready Product Search Shelf** integrated with the **VTEX Intelligent Search API**.
 
-The data-fetching examples provide initial data from a Server Component, then let the client library manage browser revalidation.
+---
 
-## Getting started
+## 🏗️ Architecture: The "Resilient Shelf" Pattern
 
+To handle the complexities of enterprise e-commerce APIs (latency, inconsistent data, and instability), we implemented a decoupled orchestration layer.
+
+### The Request Pipeline
+`User Interface (Next.js)` $\rightarrow$ `BFF Layer (NestJS)` $\rightarrow$ `VTEX Intelligent Search API`
+
+### 🛡️ Backend: The Resilience Engine (NestJS)
+The BFF is not a simple proxy; it is a stability layer that ensures the frontend never crashes due to external API failures.
+
+- **Circuit Breaker (Opossum)**: Implemented a circuit breaker pattern to prevent cascading failures. If the VTEX API exceeds error thresholds or timeouts, the breaker opens, immediately returning cached data or a graceful fallback instead of hanging the request.
+- **Hybrid Caching Strategy**: 
+  - **L1 (Redis)**: Distributed cache for fast, shared responses.
+  - **L2 (In-Memory)**: Local fallback cache to ensure availability even if Redis is unavailable.
+- **Data Normalization**: Transforms complex, deeply nested VTEX JSON into a flat, type-safe GraphQL schema. It solves the "Image Ambiguity" by checking both product-level and SKU-level images.
+- **Type Precision**: Fixed critical price rounding issues by implementing `Float` scalars for BRL currency support.
+
+### ⚡ Frontend: The Performance Layer (Next.js 15)
+Focused on **Core Web Vitals** and a seamless user experience.
+
+- **Next.js 15 Streaming**: Implemented the new `async searchParams` pattern. By wrapping the content in `<Suspense>`, the page shell (header/layout) renders instantly, while the product grid "streams" in as soon as the BFF responds.
+- **URL as State**: Leveraged Server Actions to synchronize search terms with the URL. This enables:
+  - **Deep-linking**: Share specific search results via URL.
+  - **Persistence**: Search state survives page reloads.
+- **BRL-First UI**: Integrated `Intl.NumberFormat` for professional Brazilian currency formatting.
+- **Graceful Degradation**: Built-in image fallback logic to prevent "broken image" icons in the UI.
+
+---
+
+## 🛠️ Setup & Execution
+
+### 1. Start the BFF (The Brain)
 ```bash
-npm install
-npm run dev
+cd ../poc-bff-vtex
+pnpm install
+pnpm dev
 ```
+*API running at `http://localhost:4000/graphql`*
 
-Open [http://localhost:3000](http://localhost:3000). Throttle the browser's network tab to watch the initial data stream into the page.
+### 2. Start the Frontend (The Face)
+```bash
+pnpm install
+pnpm dev
+```
+*App running at `http://localhost:3000`*
 
-## What each route shows
+👉 **Navigate to `/search` to experience the implementation.**
 
-| Route               | Guide section                                        | What to look for                                                                                                                                                           |
-| ------------------- | ---------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/use-context`      | Using React's `use` within a Context Provider        | The layout starts `getUser()` unawaited and passes the Promise through context; `Profile` unwraps it with `use()` and suspends.                                            |
-| `/swr`              | SPAs with SWR                                        | Provides `fallback` data, then revalidates in the browser and coordinates an optimistic mutation with a tagged server read.                                                |
-| `/swr/[id]`         | SPAs with SWR (scoped to a route segment)            | `params.then()` resolves the `id` inside `<Suspense>` and provides fallback data before SWR revalidates that product in the browser.                                       |
-| `/react-query`      | SPAs with TanStack Query                             | Provides initial query data with a tag-coordinated hydration timestamp; optimistic mutations update the same client identity.                                              |
-| `/react-query/[id]` | SPAs with TanStack Query (scoped to a route segment) | The product cache contract owns its query key, server tag, and query options; a tagged server read provides the initial query data.                                            |
-| `/browser-only`     | Rendering components only in the browser             | Compares `next/dynamic` with `ssr: false` and React's `use(browser())` API for components that read `window`.                                                              |
-| `/shallow-routing`  | Shallow routing on the client                        | `window.history.pushState` updates `?sort=` with no reload; `useSearchParams` re-sorts the list.                                                                           |
-| `/mutations`        | Mutating data with Server Actions                    | A to-do list where a Server Action runs as an async reducer via `useActionState`, and `useOptimistic` (sharing one reducer with the server) applies each change instantly. |
-| `/search`           | VTEX Product Search Shelf                            | A resilient search implementation integrating with a NestJS BFF, featuring Suspense-based streaming and normalized data mapping. |
+---
 
-## Configuration
+## 🗺️ Project Map
 
-The app enables [Cache Components](https://nextjs.org/docs/app/api-reference/config/next-config-js/cacheComponents) and Partial Prefetching. Routes with server-provided data prerender a static shell and stream dynamic data behind `<Suspense>`.
+| Route | Focus | Key Technical Implementation |
+| :--- | :--- | :--- |
+| **`/search`** | **VTEX Search Shelf** | **Streaming, Circuit Breaker, BFF Orchestration** |
+| `/use-context` | State Management | React `use()` hook and Promise-based context |
+| `/swr` | Client-side Cache | SWR revalidation & Optimistic UI |
+| `/react-query` | Query Orchestration | TanStack Query Hydration & Server Tags |
+| `/browser-only` | Client Rendering | `ssr: false` vs `use(browser())` |
+| `/shallow-routing` | Client-side State | `window.history.pushState` for non-blocking updates |
+| `/mutations` | Data Writing | Server Actions with `useActionState` & `useOptimistic` |
 
-## A note on static export
+## ⚙️ Technical Stack
 
-[Static export](https://nextjs.org/docs/app/guides/static-exports) (`output: 'export'`) is not currently compatible with Cache Components. Because this demo enables Cache Components, it must run with a server. The Server Action in `/mutations` also requires a server.
-
-## Stack
-
-- Next.js (App Router), React 19
-- [SWR](https://swr.vercel.app) v2
-- [TanStack Query](https://tanstack.com/query/latest) v5
-
-## 🛍 Product Search Shelf Implementation
-
-This project includes a production-ready implementation of a product search shelf.
-
-### Architecture
-The frontend connects to a **NestJS BFF** which orchestrates requests to the **VTEX Intelligent Search API**.
-
-### Key Frontend Features:
-- **Streaming UI**: Uses React `Suspense` to stream search results, preventing the page from blocking while waiting for the BFF.
-- **Resilient Data Fetching**: Implements a client layer (`lib/bff.ts`) that handles communication with the GraphQL BFF.
-- **Normalized UI**: Product cards are designed to handle consistent data types (Float prices) and fall-back image logic.
-
-### How to Run
-1. Ensure the [VTEX BFF](/home/rodrigues/Documents/Learn/poc-bff-vtex) is running.
-2. Run the frontend:
-   ```bash
-   npm install
-   npm run dev
-   ```
-3. Navigate to `/search`.
+- **Frontend**: Next.js 15 (App Router), React 19, Tailwind CSS.
+- **BFF**: NestJS, GraphQL (Apollo), Redis.
+- **Resilience**: Opossum (Circuit Breaker), Cache-Manager.
+- **API**: VTEX Intelligent Search.
