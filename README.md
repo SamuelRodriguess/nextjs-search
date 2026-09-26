@@ -21,10 +21,11 @@ Open [http://localhost:3000](http://localhost:3000). Throttle the browser's netw
 | `/swr`              | SPAs with SWR                                        | Provides `fallback` data, then revalidates in the browser and coordinates an optimistic mutation with a tagged server read.                                                |
 | `/swr/[id]`         | SPAs with SWR (scoped to a route segment)            | `params.then()` resolves the `id` inside `<Suspense>` and provides fallback data before SWR revalidates that product in the browser.                                       |
 | `/react-query`      | SPAs with TanStack Query                             | Provides initial query data with a tag-coordinated hydration timestamp; optimistic mutations update the same client identity.                                              |
-| `/react-query/[id]` | SPAs with TanStack Query (scoped to a route segment) | The product cache contract owns its query key, server tag, and query options; a tagged server read provides the initial query data.                                        |
+| `/react-query/[id]` | SPAs with TanStack Query (scoped to a route segment) | The product cache contract owns its query key, server tag, and query options; a tagged server read provides the initial query data.                                            |
 | `/browser-only`     | Rendering components only in the browser             | Compares `next/dynamic` with `ssr: false` and React's `use(browser())` API for components that read `window`.                                                              |
 | `/shallow-routing`  | Shallow routing on the client                        | `window.history.pushState` updates `?sort=` with no reload; `useSearchParams` re-sorts the list.                                                                           |
 | `/mutations`        | Mutating data with Server Actions                    | A to-do list where a Server Action runs as an async reducer via `useActionState`, and `useOptimistic` (sharing one reducer with the server) applies each change instantly. |
+| `/search`           | VTEX Product Search Shelf                            | A resilient search implementation integrating with a NestJS BFF, featuring Suspense-based streaming and normalized data mapping. |
 
 ## Configuration
 
@@ -39,3 +40,24 @@ The app enables [Cache Components](https://nextjs.org/docs/app/api-reference/con
 - Next.js (App Router), React 19
 - [SWR](https://swr.vercel.app) v2
 - [TanStack Query](https://tanstack.com/query/latest) v5
+
+## 🛍 Product Search Shelf Implementation
+
+This project includes a production-ready implementation of a product search shelf.
+
+### Architecture
+The frontend connects to a **NestJS BFF** which orchestrates requests to the **VTEX Intelligent Search API**.
+
+### Key Frontend Features:
+- **Streaming UI**: Uses React `Suspense` to stream search results, preventing the page from blocking while waiting for the BFF.
+- **Resilient Data Fetching**: Implements a client layer (`lib/bff.ts`) that handles communication with the GraphQL BFF.
+- **Normalized UI**: Product cards are designed to handle consistent data types (Float prices) and fall-back image logic.
+
+### How to Run
+1. Ensure the [VTEX BFF](/home/rodrigues/Documents/Learn/poc-bff-vtex) is running.
+2. Run the frontend:
+   ```bash
+   npm install
+   npm run dev
+   ```
+3. Navigate to `/search`.
