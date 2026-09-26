@@ -11,6 +11,9 @@ To handle the complexities of enterprise e-commerce APIs (latency, inconsistent 
 ### The Request Pipeline
 `User Interface (Next.js)` $\rightarrow$ `BFF Layer (NestJS)` $\rightarrow$ `VTEX Intelligent Search API`
 
+![Search Shelf Preview](https://github.com/user-attachments/assets/93e0457b-d1d1-43e9-b8bc-160ea3b9cd32)
+
+
 ### 🛡️ Backend: The Resilience Engine (NestJS)
 The BFF is not a simple proxy; it is a stability layer that ensures the frontend never crashes due to external API failures.
 
