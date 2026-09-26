@@ -1,9 +1,7 @@
 import type { Metadata } from 'next'
 import { GeistSans } from 'geist/font/sans'
 import { GeistMono } from 'geist/font/mono'
-import { Suspense } from 'react'
 import './globals.css'
-import { Nav, NavFallback } from './nav'
 
 export const metadata: Metadata = {
   title: 'Next.js SPA patterns',
@@ -11,20 +9,17 @@ export const metadata: Metadata = {
     'Runnable demos for the Next.js Single-Page Applications guide, including client libraries with server-provided initial data.',
 }
 
-export default function RootLayout({ children }: LayoutProps<'/'>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
       lang="en"
       className={`${GeistSans.variable} ${GeistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col font-sans">
-        <Suspense fallback={<NavFallback />}>
-          <Nav />
-        </Suspense>
-        <main className="mx-auto w-full max-w-3xl flex-1 px-6 py-16">
+        <main className="mx-auto w-full max-w-7xl flex-1 px-6 py-16">
           {children}
         </main>
       </body>
     </html>
-  )
+  );
 }

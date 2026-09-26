@@ -18,7 +18,7 @@ async function fetchBFF<T>(query: string, variables = {}): Promise<T> {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ query, variables }),
-    next: { revalidate: 60 }, // Cache for 1 minute
+    next: { revalidate: 60 },
   });
 
   const json = await res.json();

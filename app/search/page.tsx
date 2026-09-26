@@ -8,7 +8,7 @@ async function SearchContent({
 }: {
   searchParams: { q?: string; limit?: string };
 }) {
-  const { q = 'piso', limit = '50' } = searchParams;
+  const { q = 'Piso Vinílico', limit = '50' } = searchParams;
   
   let products: any[] = [];
   let total = 0;
