@@ -2,6 +2,7 @@ import { searchProducts } from '@/lib/bff';
 import ProductCard from './product-card';
 import { updateSearch } from './actions';
 import { Suspense } from 'react';
+import SearchForm from './search-form';
 
 async function SearchContent({
   searchParams,
@@ -29,26 +30,7 @@ async function SearchContent({
           <p className="text-gray-500">Found {total} products for "{q}"</p>
         </div>
 
-        <form action={updateSearch} className="flex gap-2">
-          <input 
-            name="term" 
-            defaultValue={q} 
-            placeholder="Search products..." 
-            className="border p-2 rounded-md"
-          />
-          <input 
-            name="count" 
-            defaultValue={limit} 
-            type="number" 
-            className="border p-2 rounded-md w-20"
-          />
-          <button 
-            type="submit" 
-            className="bg-black text-white px-4 py-2 rounded-md hover:bg-gray-800"
-          >
-            Search
-          </button>
-        </form>
+        <SearchForm defaultTerm={q} defaultLimit={limit} />
       </header>
 
       {products.length > 0 ? (
