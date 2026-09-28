@@ -1,10 +1,10 @@
-# 🚀 Next.js 15 & NestJS BFF: Enterprise Search POC
+# Search POC
 
 This repository is a technical showcase of a high-performance product search implementation. It demonstrates a **Production-Ready Product Search Shelf** integrated with the **VTEX Intelligent Search API**, utilizing a modern decoupled architecture.
 
 ---
 
-## 🏗️ Architecture: The "Resilient Shelf" Pattern
+## Architecture: The "Resilient Shelf" Pattern
 
 To handle the complexities of enterprise e-commerce APIs (latency, inconsistent data, and instability), we implemented a decoupled orchestration layer.
 
