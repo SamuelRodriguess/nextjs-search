@@ -1,6 +1,7 @@
 'use client';
 
 import { Product } from '@/lib/bff';
+import { sendGTMEvent } from '@next/third-parties/google';
 
 export default function ProductCard({ product }: { product: Product }) {
   const imageUrl = product.imageUrl || 'https://via.placeholder.com/300x300?text=Sem+Imagem';
@@ -35,6 +36,12 @@ export default function ProductCard({ product }: { product: Product }) {
         href={product.link || '#'} 
         target="_blank"
         rel="noopener noreferrer"
+        onClick={() => sendGTMEvent({ 
+          event: 'shelf_add_to_cart', 
+          productId: product.productId, 
+          productName: product.name,
+          price: product.price 
+        })}
         className="mt-auto w-full py-2.5 px-4 bg-slate-900 text-white text-xs font-bold uppercase tracking-wider rounded-lg hover:bg-blue-600 transition-all duration-300 active:scale-95 text-center"
       >
         Ver Detalhes
