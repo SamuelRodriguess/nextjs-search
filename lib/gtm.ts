@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 /**
  * Dispatches a custom event to Google Tag Manager.
@@ -7,11 +7,11 @@
  */
 export function sendGTMEvent(eventName: string, params?: Record<string, any>) {
   if (typeof window !== 'undefined' && (window as any).dataLayer) {
-    (window as any).dataLayer.push({
+    ;(window as any).dataLayer.push({
       event: eventName,
       ...params,
-    });
+    })
   } else {
-    console.warn('[GTM] dataLayer not found. Event not sent:', eventName);
+    console.warn('[GTM] dataLayer not found. Event not sent:', eventName)
   }
 }

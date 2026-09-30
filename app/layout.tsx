@@ -10,7 +10,11 @@ export const metadata: Metadata = {
     'Runnable demos for the Next.js Single-Page Applications guide, including client libraries with server-provided initial data.',
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   return (
     <html
       lang="en"
@@ -23,5 +27,5 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </main>
       </body>
     </html>
-  );
+  )
 }
