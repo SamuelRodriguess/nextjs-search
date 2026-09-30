@@ -9,22 +9,24 @@ This repository is a technical showcase of a high-performance product search imp
 To handle the complexities of enterprise e-commerce APIs (latency, inconsistent data, and instability), we implemented a decoupled orchestration layer.
 
 ### The Request Pipeline
+
 `User Interface (Next.js)` $\rightarrow$ `BFF Layer (NestJS)` $\rightarrow$ `VTEX Intelligent Search API`
 
 ![Search Shelf Preview](https://github.com/user-attachments/assets/93e0457b-d1d1-43e9-b8bc-160ea3b9cd32)
 
-
 ### 🛡️ Backend: The Resilience Engine (NestJS)
+
 The BFF is not a simple proxy; it is a stability layer that ensures the frontend never crashes due to external API failures.
 
 - **Circuit Breaker (Opossum)**: Implemented a circuit breaker pattern to prevent cascading failures. If the VTEX API exceeds error thresholds or timeouts, the breaker opens, immediately returning cached data or a graceful fallback instead of hanging the request.
-- **Hybrid Caching Strategy**: 
+- **Hybrid Caching Strategy**:
   - **L1 (Redis)**: Distributed cache for fast, shared responses.
   - **L2 (In-Memory)**: Local fallback cache to ensure availability even if Redis is unavailable.
 - **Data Normalization**: Transforms complex, deeply nested VTEX JSON into a flat, type-safe GraphQL schema. It solves the "Image Ambiguity" by checking both product-level and SKU-level images.
 - **Type Precision**: Fixed critical price rounding issues by implementing `Float` scalars for BRL currency support.
 
 ### ⚡ Frontend: The Performance Layer (Next.js 15)
+
 Focused on **Core Web Vitals** and a seamless user experience.
 
 - **Next.js 15 Streaming**: Implemented the new `async searchParams` pattern. By wrapping the content in `<Suspense>`, the page shell (header/layout) renders instantly, while the product grid "streams" in as soon as the BFF responds.
@@ -39,19 +41,23 @@ Focused on **Core Web Vitals** and a seamless user experience.
 ## 🛠️ Setup & Execution
 
 ### 1. Start the BFF (The Brain)
+
 ```bash
 cd ../poc-bff-vtex
 pnpm install
 pnpm dev
 ```
-*API running at `http://localhost:4000/graphql`*
+
+_API running at `http://localhost:4000/graphql`_
 
 ### 2. Start the Frontend (The Face)
+
 ```bash
 pnpm install
 pnpm dev
 ```
-*App running at `http://localhost:3000`*
+
+_App running at `http://localhost:3000`_
 
 👉 **Navigate to `/search` to experience the implementation.**
 
